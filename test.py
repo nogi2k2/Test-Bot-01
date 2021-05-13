@@ -1,20 +1,27 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelWithLMHead, AutoTokenizer
 import torch
+import discord
+import os
+
+tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-small")
+model = AutoModelWithLMHead.from_pretrained("microsoft/DialoGPT-small")
+
+class MyClient(discord.Client):
+    async def on_ready(self):
+        print('Logged on as {0}!'.format(self.user))
 
 
-tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-large")
-model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-large")
+    async def on_message(self, message):
+        if message.author == client.user:
+            return
+        channel = client.get_channel(842310690635120640)
+        bot_input_ids = tokenizer.encode(message.content + tokenizer.eos_token, return_tensors='pt')
+        chat_ids = model.generate(bot_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
+        messagebot = tokenizer.decode(chat_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
+        tosend = "no comment" if messagebot == "" else messagebot
+        await channel.send(tosend)
+        print('Message from {0.author}: {0.content}'.format(message))
+        print('Message from bot {}'.format(tosend))
 
-# Let's chat for 5 lines
-for step in range(5):
-    # encode the new user input, add the eos_token and return a tensor in Pytorch
-    new_user_input_ids = tokenizer.encode(input(">> User:") + tokenizer.eos_token, return_tensors='pt')
-
-    # append the new user input tokens to the chat history
-    bot_input_ids = torch.cat([chat_history_ids, new_user_input_ids], dim=-1) if step > 0 else new_user_input_ids
-
-    # generated a response while limiting the total chat history to 1000 tokens, 
-    chat_history_ids = model.generate(bot_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
-
-    # pretty print last ouput tokens from bot
-    print("DialoGPT: {}".format(tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)))
+client = MyClient()
+client.run(os.environ['DISCORD_TOKEN'])

@@ -1,38 +1,22 @@
 import discord
 from discord.ext import commands
 import random
-# from selenium import webdriver
-# from selenium.webdriver.common.keys import Keys
+# from transformers import AutoModelWithLMHead, AutoTokenizer
+# import torch
 client= commands.Bot(command_prefix="^")
 
+
+# tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-small")
+# model = AutoModelWithLMHead.from_pretrained("microsoft/DialoGPT-small")
 
 game = ['rock','paper','scissors']
 reactionwon = ['gottee!','ez bwoi','bruh, I won ;-;']
 reactionlost = ['wtf how!','how did you..','sheer luck mate!']
 
+
 @client.event
 async def on_ready():
     print("Bot Ready for use")
-
-# driver = webdriver.Chrome()
-# driver.get('https://www.cleverbot.com')
-# driver.find_element_by_id('noteb').click()
-
-# def get_response(message):
-#     driver.find_element_by_xpath('//*[@id="avatarform"]/input[1]').send_keys(message + Keys.RETURN)
-#     while True:
-#         try:
-#             driver.find_element_by_xpath('//*[@id="snipTextIcon"]')
-#             break
-#         except:
-#             continue
-#     response = driver.find_element_by_xpath('//*[@id="line1"]/span[1]').text
-#     return response
-
-#     async def on_message(self, message):
-#         if message.author != self.user:
-#             reponse = get_response(message.content)
-#             await message.channel.send({reponse})
 
 
 @client.command(aliases=['hi','Hi','Hello'])
@@ -47,13 +31,13 @@ async def clear(ctx, amount = 2):
 @client.command(aliases=['k','K','Kick','throw'])
 @commands.has_permissions(kick_members = True)
 async def kick(ctx,member : discord.Member,*,reason="Because you suck!"):
-    await ctx.send(f"{member}has been kicked for :"+"\n"+"||"+reason+"||")
+    await ctx.send(f"{member} has been kicked for :"+"\n"+"||"+reason+"||")
     await member.kick(reason = reason)
 
 @client.command(aliases=['b','B','Ban'])
 @commands.has_permissions(ban_members = True)
 async def ban(ctx,member : discord.Member,*,reason="Because you suck!"):
-    await ctx.send(f"{member}banned for :"+"\n"+"||"+reason+"||")
+    await ctx.send(f"{member} banned for :"+"\n"+"||"+reason+"||")
     await member.ban(reason = reason)
 
 @client.command(aliases = ['ub','UB','Unban'])
@@ -73,9 +57,22 @@ async def unban(ctx,*,member):
 @client.command(aliases = ['m','M','Muted'])
 @commands.has_permissions(kick_members = True)
 async def mute(ctx,member : discord.Member):
-    muted_role = ctx.guild.get_role(837364188959473714)
+    muted_role = ctx.guild.get_role(842301615519825922)
     await member.add_roles(muted_role)
-    await ctx.send(member.mention+"has been muted")
+    await ctx.send(member.mention+" has been muted")
+
+
+# @client.event
+# async def on_message(self, message):
+#     if message.author == client.user:
+#         return
+#     msg=message.content
+#     channel = client.get_channel(842310690635120640)
+#     bot_input_ids = tokenizer.encode(msg + tokenizer.eos_token, return_tensors='pt')
+#     chat_ids = model.generate(bot_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
+#     messagebot = tokenizer.decode(chat_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
+#     tosend = "no comment" if messagebot == "" else messagebot
+#     await message.channel.send(tosend)    
     
 
 @client.event
@@ -116,4 +113,4 @@ async def on_message(message):
 
 
 
-client.run("ODM3MDIzMTUxMDM2Njk0NjIw.YImgjg.51dlHAhsoDm1Gt1plbHXaec0qiw")
+client.run("ODM3MDIzMTUxMDM2Njk0NjIw.YImgjg.nO08voZ229wsQ-bK4IYxsDxzP0A")
